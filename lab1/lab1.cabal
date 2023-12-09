@@ -25,8 +25,15 @@ source-repository head
 
 library
   exposed-modules:
+      Entities.Competition
+      Entities.Instructor
+      Entities.Section
+      Entities.SectionInstructor
+      Entities.SectionLesson
+      Entities.SectionStudent
       Entities.Student
       Lib
+      Utils
   other-modules:
       Paths_lab1
   autogen-modules:
