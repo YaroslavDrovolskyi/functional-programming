@@ -5,9 +5,10 @@ module Entities.Student where
 import Database.PostgreSQL.Simple.ToRow
 import Database.PostgreSQL.Simple.FromRow
 import Data.Time.Calendar.OrdinalDate
+import Data.Int
 
 data Student = Student {
-    id :: Int,
+    id :: Int64,
     name :: String,
     surname :: String,
     patronymic :: String,
