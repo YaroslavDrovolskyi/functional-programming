@@ -1,24 +1,22 @@
-module Menus.StudentMenu where
-
+module Menus.InstructorMenu where
 
 import System.IO
 import Database.PostgreSQL.Simple
-import Entities.Student
+import Entities.Instructor
 import Data.Int
 import Utils
 
 
 
-
-studentMainMenu :: Connection -> IO()
-studentMainMenu conn = do
+instructorMainMenu :: Connection -> IO()
+instructorMainMenu conn = do
   putStrLn("")
-  putStrLn("======================= Student menu =======================")
-  putStrLn("  1) Show student")
-  putStrLn("  2) Show all students")
-  putStrLn("  3) Add student")
-  putStrLn("  4) Edit student")
-  putStrLn("  5) Delete student")
+  putStrLn("======================= Instructor menu =======================")
+  putStrLn("  1) Show instructor")
+  putStrLn("  2) Show all instructors")
+  putStrLn("  3) Add instructor")
+  putStrLn("  4) Edit instructor")
+  putStrLn("  5) Delete instructor")
   putStrLn("  6) Back")
   putStrLn("============================================================")
   putStr("Option: ")
@@ -28,42 +26,42 @@ studentMainMenu conn = do
   _ <- getLine
 
   case resp of
-    '1' -> showStudent conn
-    '2' -> showAllStudents conn
-    '3' -> showCreateStudent conn
-    '4' -> showEditStudent conn
-    '5' -> showDeleteStudent conn
+    '1' -> showInstructor conn
+    '2' -> showAllInstructors conn
+    '3' -> showCreateInstructor conn
+    '4' -> showEditInstructor conn
+    '5' -> showDeleteInstructor conn
     _ -> putStrLn("")
 
   if resp /= '6'
-   then studentMainMenu conn
+   then instructorMainMenu conn
   else putStr("")
 
 
-showStudent :: Connection -> IO()
-showStudent conn = do
+showInstructor :: Connection -> IO()
+showInstructor conn = do
   putStr("Enter ID: ")
   hFlush stdout
 
   input <- getLine
   let id = (read input :: Int64)
 
-  result <- getStudent conn id
+  result <- getInstructor conn id
   if null(result) == True
-    then putStrLn("Student with such ID does not exist")
+    then putStrLn("Instructor with such ID does not exist")
   else mapM_ print result
 
 
-showAllStudents :: Connection -> IO()
-showAllStudents conn = do
-  result <- getAllStudents conn
+showAllInstructors :: Connection -> IO()
+showAllInstructors conn = do
+  result <- getAllInstructors conn
   if null(result) == True
-    then putStrLn("No student found")
+    then putStrLn("No instructor found")
   else mapM_ print result
 
 
-showCreateStudent :: Connection -> IO()
-showCreateStudent conn = do
+showCreateInstructor :: Connection -> IO()
+showCreateInstructor conn = do
   putStr("Name: ")
   hFlush stdout
   name <- getLine
@@ -81,32 +79,27 @@ showCreateStudent conn = do
   birthdayStr <- getLine
   let birthday = parseDate birthdayStr
 
-  putStr("Address: ")
+  putStr("Degree: ")
   hFlush stdout
-  address <- getLine
+  degree <- getLine
 
-  putStr("Course: ")
-  hFlush stdout
-  courseStr <- getLine
-  let course = (read courseStr :: Int)
-
-  createStudent conn name surname patronymic birthday address course
+  createInstructor conn name surname patronymic birthday degree
   putStr("")
 
 
-showEditStudent :: Connection -> IO()
-showEditStudent conn = do
-  putStr("Enter Student ID: ")
+showEditInstructor :: Connection -> IO()
+showEditInstructor conn = do
+  putStr("Enter Instructor ID: ")
   hFlush stdout
 
   idStr <- getLine
   let id = (read idStr :: Int64)
 
-  student <- getStudent conn id
-  if null(student) == True
-    then putStrLn("Student with such ID does not exist")
+  instructor <- getInstructor conn id
+  if null(instructor) == True
+    then putStrLn("Instructor with such ID does not exist")
   else do
-    mapM_ print student
+    mapM_ print instructor
 
     putStrLn("")
     putStrLn("What do you want to edit?")
@@ -114,9 +107,8 @@ showEditStudent conn = do
     putStrLn("  2) surname")
     putStrLn("  3) patronymic")
     putStrLn("  4) birthday")
-    putStrLn("  5) address")
-    putStrLn("  6) course")
-    putStrLn("  7) [back]")
+    putStrLn("  5) degree")
+    putStrLn("  6) [back]")
     putStr("Option: ")
     hFlush stdout
 
@@ -129,7 +121,7 @@ showEditStudent conn = do
         hFlush stdout
         name <- getLine
 
-        res <- updateStudentName conn id name
+        res <- updateInstructorName conn id name
         if res == True
           then putStrLn("Updated successfully")
         else putStrLn("Not updated")
@@ -140,7 +132,7 @@ showEditStudent conn = do
         hFlush stdout
         surname <- getLine
 
-        res <- updateStudentSurname conn id surname
+        res <- updateInstructorSurname conn id surname
         if res == True
           then putStrLn("Updated successfully")
         else putStrLn("Not updated")
@@ -151,7 +143,7 @@ showEditStudent conn = do
         hFlush stdout
         patronymic <- getLine
 
-        res <- updateStudentPatronymic conn id patronymic
+        res <- updateInstructorPatronymic conn id patronymic
         if res == True
           then putStrLn("Updated successfully")
         else putStrLn("Not updated")
@@ -163,30 +155,18 @@ showEditStudent conn = do
         birthdayStr <- getLine
         let birthday = parseDate birthdayStr
 
-        res <- updateStudentBirthday conn id birthday
+        res <- updateInstructorBirthday conn id birthday
         if res == True
           then putStrLn("Updated successfully")
         else putStrLn("Not updated")
 
 
       '5' -> do
-        putStr("Address: ")
+        putStr("Degree: ")
         hFlush stdout
-        address <- getLine
+        degree <- getLine
 
-        res <- updateStudentAddress conn id address
-        if res == True
-          then putStrLn("Updated successfully")
-        else putStrLn("Not updated")
-
-
-      '6' -> do
-        putStr("Course: ")
-        hFlush stdout
-        courseStr <- getLine
-        let course = (read courseStr :: Int)
-
-        res <- updateStudentCourse conn id course
+        res <- updateInstructorDegree conn id degree
         if res == True
           then putStrLn("Updated successfully")
         else putStrLn("Not updated")
@@ -195,19 +175,19 @@ showEditStudent conn = do
       _ -> putStrLn("")
 
 
-showDeleteStudent :: Connection -> IO()
-showDeleteStudent conn = do
-  putStr("Enter Student ID: ")
+showDeleteInstructor :: Connection -> IO()
+showDeleteInstructor conn = do
+  putStr("Enter Instructor ID: ")
   hFlush stdout
 
   idStr <- getLine
   let id = (read idStr :: Int64)
 
-  student <- getStudent conn id
-  if null(student) == True
-    then putStrLn("Student with such ID does not exist")
+  instructor <- getInstructor conn id
+  if null(instructor) == True
+    then putStrLn("Instructor with such ID does not exist")
   else do
-    mapM_ print student
+    mapM_ print instructor
 
     putStr("Do you want to delete? (y/n) ")
     hFlush stdout
@@ -217,13 +197,10 @@ showDeleteStudent conn = do
 
     if resp == 'y'
       then do
-        res <- deleteStudent conn id
+        res <- deleteInstructor conn id
         if res == True
           then putStrLn("Deleted successfully!")
         else putStrLn("Not deleted")
     else putStrLn("")
-
-
-
 
 

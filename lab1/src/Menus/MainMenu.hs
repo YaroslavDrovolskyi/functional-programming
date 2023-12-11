@@ -2,6 +2,7 @@ module Menus.MainMenu where
 
 import Database.PostgreSQL.Simple
 import Menus.StudentMenu
+import Menus.InstructorMenu
 import System.IO
 
 mainMenu :: Connection -> IO()
@@ -26,7 +27,7 @@ mainMenu conn = do
 
   case resp of
     '1' -> studentMainMenu conn
-    '2' -> putStrLn("2 selected")
+    '2' -> instructorMainMenu conn
     '3' -> putStrLn("3 selected")
     '4' -> putStrLn("4 selected")
     '5' -> putStrLn("4 selected")

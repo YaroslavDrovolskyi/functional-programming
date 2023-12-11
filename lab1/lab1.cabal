@@ -33,6 +33,7 @@ library
       Entities.SectionStudent
       Entities.Student
       Lib
+      Menus.InstructorMenu
       Menus.MainMenu
       Menus.StudentMenu
       Utils

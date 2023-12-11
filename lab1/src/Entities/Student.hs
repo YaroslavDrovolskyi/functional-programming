@@ -65,3 +65,8 @@ updateStudentCourse :: Connection -> Int64 -> Int -> IO(Bool)
 updateStudentCourse conn id course = do
   n <- execute conn "UPDATE students SET course = ? WHERE id = ?" (course, id)
   return $ n > 0
+
+deleteStudent :: Connection -> Int64 -> IO(Bool)
+deleteStudent conn id = do
+  n <- execute conn "DELETE FROM students WHERE id = ?" $ (Only id)
+  return $ n > 0
