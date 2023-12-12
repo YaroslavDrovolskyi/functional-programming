@@ -33,8 +33,10 @@ library
       Entities.SectionStudent
       Entities.Student
       Lib
+      Menus.CompetitionMenu
       Menus.InstructorMenu
       Menus.MainMenu
+      Menus.SectionMenu
       Menus.StudentMenu
       Utils
   other-modules:

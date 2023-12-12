@@ -4,6 +4,7 @@ import Database.PostgreSQL.Simple
 import Menus.StudentMenu
 import Menus.InstructorMenu
 import Menus.SectionMenu
+import Menus.CompetitionMenu
 import System.IO
 
 mainMenu :: Connection -> IO()
@@ -30,7 +31,7 @@ mainMenu conn = do
     '1' -> studentMainMenu conn
     '2' -> instructorMainMenu conn
     '3' -> sectionMainMenu conn
-    '4' -> putStrLn("4 selected")
+    '4' -> competitionMainMenu conn
     '5' -> putStrLn("4 selected")
     '6' -> putStrLn("4 selected")
     '7' -> putStrLn("4 selected")
