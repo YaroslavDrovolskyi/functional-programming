@@ -6,6 +6,7 @@ import Entities.SectionStudent
 import Entities.SectionInstructor
 import Entities.Student
 import Entities.Instructor
+import Entities.SectionLesson
 import Database.PostgreSQL.Simple
 import Data.Time.Calendar.OrdinalDate
 import Data.Time.LocalTime
@@ -106,6 +107,14 @@ getAllStudentsOfSection conn sectionId = query conn "SELECT students.id, name, s
                                                          \ ON sections_students.student_id = students.id \
                                                          \ WHERE sections_students.section_id = ?"
                                                           $ (Only sectionId)
+
+-- sorted by date and start_time
+getAllLessonsOfSection :: Connection -> Int64 -> IO[SectionLesson]
+getAllLessonsOfSection conn sectionId = query conn "SELECT * FROM sections_lessons \
+                                                   \ WHERE section_id = ? \
+                                                   \ ORDER BY date ASC, start_time ASC"
+                                                    $ (Only sectionId)
+
   {-
 
 

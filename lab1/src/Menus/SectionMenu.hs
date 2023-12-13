@@ -6,6 +6,7 @@ import Database.PostgreSQL.Simple
 import Entities.Section
 import Entities.Student
 import Entities.Instructor
+import Entities.SectionLesson
 import Data.Int
 import Utils
 
@@ -38,7 +39,7 @@ sectionMainMenu conn = do
     '5' -> showDeleteSection conn
     '6' -> showInstructorSectionMenu conn
     '7' -> showStudentSectionMenu conn
-    '8' -> showInstructorSectionMenu conn
+    '8' -> showSectionLessonMenu conn
     _ -> putStrLn("")
 
   if resp /= '9'
@@ -337,6 +338,89 @@ showStudentSectionMenu conn = do
 
     _ -> putStrLn("")
 
+
+showSectionLessonMenu :: Connection -> IO()
+showSectionLessonMenu conn = do
+  putStrLn("")
+  putStrLn("What do you want to do?")
+  putStrLn("  1) Add lesson")
+  putStrLn("  2) Get all lessons of section")
+  putStrLn("  3) Get all lessons")
+  putStrLn("  4) Remove lesson")
+  putStrLn("  5) [back]")
+  putStr("Option: ")
+  hFlush stdout
+
+  resp <- getChar
+  _ <- getLine
+
+
+  case resp of
+    '1' -> do
+      putStr("Enter Section ID: ")
+      hFlush stdout
+      sectionIdStr <- getLine
+      let sectionId = (read sectionIdStr :: Int64)
+
+      section <- getSection conn sectionId
+      if null(section) == True
+        then putStrLn("Section with such ID does not exist")
+      else do
+        putStr("Date (yyyy-mm-dd): ")
+        hFlush stdout
+        dateStr <- getLine
+        let date = parseDate dateStr
+
+        putStr("Start time (hh:mm:ss): ")
+        hFlush stdout
+        startTimeStr <- getLine
+        let startTime = parseTime startTimeStr
+
+        putStr("Finish time (hh:mm:ss): ")
+        hFlush stdout
+        finishTimeStr <- getLine
+        let finishTime = parseTime finishTimeStr
+
+        createSectionLesson conn sectionId date startTime finishTime
+        putStrLn("")
+
+    '2' -> do
+      putStr("Enter Section ID: ")
+      hFlush stdout
+      sectionIdStr <- getLine
+      let sectionId = (read sectionIdStr :: Int64)
+
+      section <- getSection conn sectionId
+      if null(section) == True
+        then putStrLn("Section with such ID does not exist")
+      else do
+        lessons <- getAllLessonsOfSection conn sectionId
+        if null(lessons) == True
+          then putStrLn("No lesson found")
+        else mapM_ print lessons
+
+    '3' -> do
+      result <- getAllSectionLessons conn
+      if null(result) == True
+        then putStrLn("No lesson found")
+      else mapM_ print result
+
+
+    '4' -> do
+      putStr("Enter Lesson ID: ")
+      hFlush stdout
+      lessonIdStr <- getLine
+      let lessonId = (read lessonIdStr :: Int64)
+
+      lesson <- getSectionLesson conn lessonId
+      if null(lesson) == True
+        then putStrLn("Lesson with such ID does not exist")
+      else do
+        deleteSectionLesson conn lessonId
+        putStrLn("")
+
+
+    _ -> putStrLn("")
 
 
 
