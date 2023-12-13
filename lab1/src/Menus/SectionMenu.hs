@@ -37,7 +37,7 @@ sectionMainMenu conn = do
     '4' -> showEditSection conn
     '5' -> showDeleteSection conn
     '6' -> showInstructorSectionMenu conn
-    '7' -> showInstructorSectionMenu conn
+    '7' -> showStudentSectionMenu conn
     '8' -> showInstructorSectionMenu conn
     _ -> putStrLn("")
 
@@ -317,20 +317,20 @@ showStudentSectionMenu conn = do
       if null(section) == True
         then putStrLn("Section with such ID does not exist")
       else do
-        putStr("Enter Instructor ID: ")
+        putStr("Enter Student ID: ")
         hFlush stdout
-        instructorIdStr <- getLine
-        let instructorId = (read instructorIdStr :: Int64)
+        studentIdStr <- getLine
+        let studentId = (read studentIdStr :: Int64)
 
-        instructor <- getInstructor conn instructorId
-        if null(instructor) == True
-          then putStrLn("Instructor with such ID does not exist")
+        student <- getStudent conn studentId
+        if null(student) == True
+          then putStrLn("Student with such ID does not exist")
         else do
-          instructorInSection <- getSectionInstructor conn sectionId instructorId
-          if null(instructorInSection) == True
-            then putStrLn("Given Instructor hasn't been added to this Section")
+          studentInSection <- getSectionStudent conn sectionId studentId
+          if null(studentInSection) == True
+            then putStrLn("Given Student hasn't been added to this Section")
           else do
-            removeInstructorFromSection conn sectionId instructorId
+            removeStudentFromSection conn sectionId studentId
             putStrLn("")
 
 

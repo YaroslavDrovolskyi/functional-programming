@@ -100,11 +100,11 @@ getAllInstructorsOfSection conn sectionId = query conn "SELECT instructors.id, n
                                                           $ (Only sectionId)
 
 
-getAllStudentsOfSection :: Connection -> Int64 -> IO[Instructor]
-getAllInstructorsOfSection conn sectionId = query conn "SELECT instructors.id, name, surname, patronymic, birthday, degree \
-                                                         \ FROM sections_instructors INNER JOIN instructors \
-                                                         \ ON sections_instructors.instructor_id = instructors.id \
-                                                         \ WHERE sections_instructors.section_id = ?"
+getAllStudentsOfSection :: Connection -> Int64 -> IO[Student]
+getAllStudentsOfSection conn sectionId = query conn "SELECT students.id, name, surname, patronymic, birthday, address, course \
+                                                         \ FROM sections_students INNER JOIN students \
+                                                         \ ON sections_students.student_id = students.id \
+                                                         \ WHERE sections_students.section_id = ?"
                                                           $ (Only sectionId)
   {-
 
