@@ -15,10 +15,11 @@ competitionMainMenu conn = do
   putStrLn("======================= Competition menu =======================")
   putStrLn("  1) Show competition")
   putStrLn("  2) Show all competitions")
-  putStrLn("  3) Add competition")
-  putStrLn("  4) Edit competition")
-  putStrLn("  5) Delete competition")
-  putStrLn("  6) Back")
+  putStrLn("  3) Show all competitions")
+  putStrLn("  4) Add competition")
+  putStrLn("  5) Edit competition")
+  putStrLn("  6) Delete competition")
+  putStrLn("  7) Back")
   putStrLn("============================================================")
   putStr("Option: ")
   hFlush stdout
@@ -29,12 +30,13 @@ competitionMainMenu conn = do
   case resp of
     '1' -> showCompetition conn
     '2' -> showAllCompetitions conn
-    '3' -> showCreateCompetition conn
-    '4' -> showEditCompetition conn
-    '5' -> showDeleteCompetition conn
+    '3' -> showAllCompetitionsForSection conn
+    '4' -> showCreateCompetition conn
+    '5' -> showEditCompetition conn
+    '6' -> showDeleteCompetition conn
     _ -> putStrLn("")
 
-  if resp /= '6'
+  if resp /= '7'
    then competitionMainMenu conn
   else putStr("")
 
@@ -59,6 +61,24 @@ showAllCompetitions conn = do
   if null(result) == True
     then putStrLn("No competition found")
   else mapM_ print result
+
+showAllCompetitionsForSection :: Connection -> IO()
+showAllCompetitionsForSection conn = do
+  putStr("Section ID: ")
+  hFlush stdout
+  sectionIdStr <- getLine
+  let sectionId = (read sectionIdStr :: Int64)
+
+  section <- getSection conn sectionId
+  if null(section) == True
+    then putStrLn("Section with this ID does not exist")
+  else do
+    result <- getAllCompetitionsForSection conn sectionId
+    if null(result) == True
+      then putStrLn("No competition found")
+    else mapM_ print result
+
+
 
 showCreateCompetition :: Connection -> IO()
 showCreateCompetition conn = do

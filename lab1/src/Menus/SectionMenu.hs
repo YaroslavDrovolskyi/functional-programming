@@ -4,6 +4,8 @@ module Menus.SectionMenu where
 import System.IO
 import Database.PostgreSQL.Simple
 import Entities.Section
+import Entities.Student
+import Entities.Instructor
 import Data.Int
 import Utils
 
@@ -17,7 +19,10 @@ sectionMainMenu conn = do
   putStrLn("  3) Add section")
   putStrLn("  4) Edit section")
   putStrLn("  5) Delete section")
-  putStrLn("  6) Back")
+  putStrLn("  6) Instructors & Sections")
+  putStrLn("  7) Students & Sections")
+  putStrLn("  8) Sections lessons")
+  putStrLn("  9) [Back]")
   putStrLn("============================================================")
   putStr("Option: ")
   hFlush stdout
@@ -31,9 +36,12 @@ sectionMainMenu conn = do
     '3' -> showCreateSection conn
     '4' -> showEditSection conn
     '5' -> showDeleteSection conn
+    '6' -> showInstructorSectionMenu conn
+    '7' -> showInstructorSectionMenu conn
+    '8' -> showInstructorSectionMenu conn
     _ -> putStrLn("")
 
-  if resp /= '6'
+  if resp /= '9'
    then sectionMainMenu conn
   else putStr("")
 
@@ -151,3 +159,186 @@ showDeleteSection conn = do
           then putStrLn("Deleted successfully!")
         else putStrLn("Not deleted")
     else putStrLn("")
+
+
+showInstructorSectionMenu :: Connection -> IO()
+showInstructorSectionMenu conn = do
+  putStrLn("")
+  putStrLn("What do you want to do?")
+  putStrLn("  1) Add instructor to section")
+  putStrLn("  2) Get all instructors of section")
+  putStrLn("  3) Remove instructor from section")
+  putStrLn("  4) [back]")
+  putStr("Option: ")
+  hFlush stdout
+
+  resp <- getChar
+  _ <- getLine
+
+
+  case resp of
+    '1' -> do
+      putStr("Enter Section ID: ")
+      hFlush stdout
+      sectionIdStr <- getLine
+      let sectionId = (read sectionIdStr :: Int64)
+
+      section <- getSection conn sectionId
+      if null(section) == True
+        then putStrLn("Section with such ID does not exist")
+      else do
+        putStr("Enter Instructor ID: ")
+        hFlush stdout
+        instructorIdStr <- getLine
+        let instructorId = (read instructorIdStr :: Int64)
+
+        instructor <- getInstructor conn instructorId
+        if null(instructor) == True
+          then putStrLn("Instructor with such ID does not exist")
+        else do
+          instructorInSection <- getSectionInstructor conn sectionId instructorId
+          if null(instructorInSection) /= True
+            then putStrLn("Given Instructor is already added to this Section")
+          else do
+            addInstructorToSection conn sectionId instructorId
+            putStrLn("")
+
+    '2' -> do
+      putStr("Enter Section ID: ")
+      hFlush stdout
+      sectionIdStr <- getLine
+      let sectionId = (read sectionIdStr :: Int64)
+
+      section <- getSection conn sectionId
+      if null(section) == True
+        then putStrLn("Section with such ID does not exist")
+      else do
+        instructors <- getAllInstructorsOfSection conn sectionId
+        if null(instructors) == True
+          then putStrLn("No instructor found")
+        else mapM_ print instructors
+
+    '3' -> do
+      putStr("Enter Section ID: ")
+      hFlush stdout
+      sectionIdStr <- getLine
+      let sectionId = (read sectionIdStr :: Int64)
+
+      section <- getSection conn sectionId
+      if null(section) == True
+        then putStrLn("Section with such ID does not exist")
+      else do
+        putStr("Enter Instructor ID: ")
+        hFlush stdout
+        instructorIdStr <- getLine
+        let instructorId = (read instructorIdStr :: Int64)
+
+        instructor <- getInstructor conn instructorId
+        if null(instructor) == True
+          then putStrLn("Instructor with such ID does not exist")
+        else do
+          instructorInSection <- getSectionInstructor conn sectionId instructorId
+          if null(instructorInSection) == True
+            then putStrLn("Given Instructor hasn't been added to this Section")
+          else do
+            removeInstructorFromSection conn sectionId instructorId
+            putStrLn("")
+
+
+
+    _ -> putStrLn("")
+
+
+
+showStudentSectionMenu :: Connection -> IO()
+showStudentSectionMenu conn = do
+  putStrLn("")
+  putStrLn("What do you want to do?")
+  putStrLn("  1) Add student to section")
+  putStrLn("  2) Get all students of section")
+  putStrLn("  3) Remove student from section")
+  putStrLn("  4) [back]")
+  putStr("Option: ")
+  hFlush stdout
+
+  resp <- getChar
+  _ <- getLine
+
+
+  case resp of
+    '1' -> do
+      putStr("Enter Section ID: ")
+      hFlush stdout
+      sectionIdStr <- getLine
+      let sectionId = (read sectionIdStr :: Int64)
+
+      section <- getSection conn sectionId
+      if null(section) == True
+        then putStrLn("Section with such ID does not exist")
+      else do
+        putStr("Enter Student ID: ")
+        hFlush stdout
+        studentIdStr <- getLine
+        let studentId = (read studentIdStr :: Int64)
+
+        student <- getStudent conn studentId
+        if null(student) == True
+          then putStrLn("Student with such ID does not exist")
+        else do
+          studentInSection <- getSectionStudent conn sectionId studentId
+          if null(studentInSection) /= True
+            then putStrLn("Given Student is already added to this Section")
+          else do
+            addStudentToSection conn sectionId studentId
+            putStrLn("")
+
+    '2' -> do
+      putStr("Enter Section ID: ")
+      hFlush stdout
+      sectionIdStr <- getLine
+      let sectionId = (read sectionIdStr :: Int64)
+
+      section <- getSection conn sectionId
+      if null(section) == True
+        then putStrLn("Section with such ID does not exist")
+      else do
+        students <- getAllStudentsOfSection conn sectionId
+        if null(students) == True
+          then putStrLn("No student found")
+        else mapM_ print students
+
+    '3' -> do
+      putStr("Enter Section ID: ")
+      hFlush stdout
+      sectionIdStr <- getLine
+      let sectionId = (read sectionIdStr :: Int64)
+
+      section <- getSection conn sectionId
+      if null(section) == True
+        then putStrLn("Section with such ID does not exist")
+      else do
+        putStr("Enter Instructor ID: ")
+        hFlush stdout
+        instructorIdStr <- getLine
+        let instructorId = (read instructorIdStr :: Int64)
+
+        instructor <- getInstructor conn instructorId
+        if null(instructor) == True
+          then putStrLn("Instructor with such ID does not exist")
+        else do
+          instructorInSection <- getSectionInstructor conn sectionId instructorId
+          if null(instructorInSection) == True
+            then putStrLn("Given Instructor hasn't been added to this Section")
+          else do
+            removeInstructorFromSection conn sectionId instructorId
+            putStrLn("")
+
+
+
+    _ -> putStrLn("")
+
+
+
+
+
+

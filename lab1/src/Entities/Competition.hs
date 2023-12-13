@@ -44,3 +44,7 @@ deleteCompetition conn id = do
   n <- execute conn "DELETE FROM competitions WHERE id = ?" $ (Only id)
   return $ n > 0
 
+getAllCompetitionsForSection :: Connection -> Int64 -> IO[Competition]
+getAllCompetitionsForSection conn sectionId = query conn "SELECT * FROM competitions WHERE section_id = ?" $ (Only sectionId)
+
+
