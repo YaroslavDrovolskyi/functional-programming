@@ -15,11 +15,11 @@ competitionMainMenu conn = do
   putStrLn("======================= Competition menu =======================")
   putStrLn("  1) Show competition")
   putStrLn("  2) Show all competitions")
-  putStrLn("  3) Show all competitions")
+  putStrLn("  3) Show all competitions for section")
   putStrLn("  4) Add competition")
   putStrLn("  5) Edit competition")
   putStrLn("  6) Delete competition")
-  putStrLn("  7) Back")
+  putStrLn("  7) [Back]")
   putStrLn("============================================================")
   putStr("Option: ")
   hFlush stdout

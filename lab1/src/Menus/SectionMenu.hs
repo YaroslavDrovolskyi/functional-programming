@@ -416,8 +416,22 @@ showSectionLessonMenu conn = do
       if null(lesson) == True
         then putStrLn("Lesson with such ID does not exist")
       else do
-        deleteSectionLesson conn lessonId
-        putStrLn("")
+        mapM_ print lesson
+
+        putStr("Do you want to delete? (y/n) ")
+        hFlush stdout
+
+        resp <- getChar
+        _ <- getLine
+
+        if resp == 'y'
+          then do
+            res <- deleteSectionLesson conn lessonId
+            if res == True
+              then putStrLn("Deleted successfully!")
+            else putStrLn("Not deleted")
+        else putStrLn("")
+
 
 
     _ -> putStrLn("")

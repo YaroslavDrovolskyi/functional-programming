@@ -17,7 +17,7 @@ instructorMainMenu conn = do
   putStrLn("  3) Add instructor")
   putStrLn("  4) Edit instructor")
   putStrLn("  5) Delete instructor")
-  putStrLn("  6) Back")
+  putStrLn("  6) [Back]")
   putStrLn("============================================================")
   putStr("Option: ")
   hFlush stdout

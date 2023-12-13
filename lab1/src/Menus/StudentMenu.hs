@@ -19,7 +19,7 @@ studentMainMenu conn = do
   putStrLn("  3) Add student")
   putStrLn("  4) Edit student")
   putStrLn("  5) Delete student")
-  putStrLn("  6) Back")
+  putStrLn("  6) [Back]")
   putStrLn("============================================================")
   putStr("Option: ")
   hFlush stdout
